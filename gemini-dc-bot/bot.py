@@ -3,6 +3,8 @@ import os
 import discord
 from dotenv import load_dotenv
 
+from logger import logger
+
 load_dotenv("../.env")
 
 intents = discord.Intents.default()
@@ -12,16 +14,21 @@ client = discord.Client(intents=intents)
 
 @client.event
 async def on_ready():
-    print(f"Logged in as {client.user.name} (ID: {client.user.id})")
+    logger.info(f"Logged in as {client.user.name} (ID: {client.user.id})")
     print("-" * 32)
 
 
 @client.event
 async def on_message(message):
-    if message.author == client.user:
+    author = message.author
+    channel = message.channel
+    content = message.content
+    if author == client.user:
         return
     if not client.user.mentioned_in(message):
         return
+
+    logger.info(f"From {author} in {channel}\n\t{content}")
     await message.channel.send(f"Hello, world!")
 
 
