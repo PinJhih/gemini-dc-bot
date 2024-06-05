@@ -3,6 +3,7 @@ import os
 import discord
 from dotenv import load_dotenv
 
+import model
 from logger import logger
 
 load_dotenv("../.env")
@@ -28,8 +29,10 @@ async def on_message(message):
     if not client.user.mentioned_in(message):
         return
 
-    logger.info(f"From {author} in {channel}\n\t{content}")
-    await message.channel.send(f"Hello, world!")
+    logger.info(f"From {author} in channel {channel}\n\t{content}")
+
+    response = model.send_message(content)
+    await message.channel.send(response)
 
 
 TOKEN = os.getenv("BOT_TOKEN")
