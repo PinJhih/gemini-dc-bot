@@ -30,13 +30,16 @@ async def on_message(message):
         return
     if not client.user.mentioned_in(message):
         return
-    logger.info(f"From {author} in channel {channel}\n\t{content}")
+    log = f'From "{author}" in channel "{channel}"'
 
-    user_message = [content]
+    content = content.replace(f"<@{client.user.id}>", "聰明BOT")
+    user_message = [f"From <@{author.id}> in {channel.id}\n{content}"]
     if message.attachments:
         images = attachments.get_images(message.attachments)
-        user_message.extend(images)
-        logger.info(f"with {len(images)} image(s)")
+        if len(images) != 0:
+            user_message.extend(images)
+            log += f" with {len(images)} image(s)"
+    logger.info(log)
 
     response = model.send_message(user_message)
     await message.channel.send(response)
