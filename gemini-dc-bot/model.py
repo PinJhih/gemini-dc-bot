@@ -6,15 +6,17 @@ from dotenv import load_dotenv
 from logger import logger
 
 
+# load .env
 load_dotenv()
 
+# set API key
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=GOOGLE_API_KEY)
 
 
 class Model:
-    def __init__(self) -> None:
-        self.model_name = "gemini-1.5-flash"
+    def __init__(self, model_name: str = "gemini-1.5-flash") -> None:
+        self.model_name = model_name
 
         self.sys_instruction = """
             你現在是一個 Discord 聊天機器人叫做「聰明BOT」，在一個主要使用繁體中文 Discord Server。
@@ -53,11 +55,59 @@ class Model:
             system_instruction=self.sys_instruction,
         )
 
+    def reload_config(self):
+        try:
+            model = self.create_model()
+        except:
+            logger.error("Cannot create model")
+            return
+        self.model = model
+        self.chat = self.model.start_chat()
+
+    def set_model_name(self, name: str):
+        if name not in [""]:
+            logger.error(f'"{name}" is not a valid model name')
+            return
+        self.model_name = name
+        self.reload_config()
+
+    def set_system_instruction(self, instruction: str):
+        self.sys_instruction = instruction
+        self.reload_config()
+
+    def set_temperature(self, t: float):
+        if t < 0 or t > 1:
+            logger.error(f"{t} is not a valid temperature.")
+            return
+        self.generation_config["temperature"] = t
+        self.reload_config()
+
+    def set_top_p(self, top_p: float):
+        if top_p < 0 or top_p > 1:
+            logger.error(f"{top_p} is not a valid Top P.")
+            return
+        self.generation_config["top_p"] = top_p
+        self.reload_config()
+
+    def set_top_k(self, top_k: int):
+        if top_k <= 0:
+            logger.error(f"{top_k} is not a valid Top K.")
+            return
+        self.generation_config["top_k"] = top_k
+        self.reload_config()
+
+    def set_max_output_tokens(self, max_len: int):
+        if max_len <= 0:
+            logger.error(f"{max_len} is not a valid max output tokens.")
+            return
+        self.generation_config["max_output_tokens"] = max_len
+        self.reload_config()
+
     def send_message(self, message):
         try:
             response = self.chat.send_message(message)
             logger.info("Received response from Gemini.")
             return response.text
         except Exception as e:
-            logger.error(f"{e}")
+            logger.error(f"Gemini Error:\n\t{e}")
             return "Please try again later..."
