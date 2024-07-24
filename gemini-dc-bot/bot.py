@@ -3,9 +3,8 @@ import os
 import discord
 from dotenv import load_dotenv
 
-
-import model
 import attachments
+from model import Model
 from logger import logger
 
 load_dotenv("../.env")
@@ -13,6 +12,8 @@ load_dotenv("../.env")
 intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
+
+model = Model()
 
 
 @client.event
