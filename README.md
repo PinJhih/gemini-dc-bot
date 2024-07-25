@@ -2,20 +2,20 @@
 
 ## Setup
 
-### Download Source Code
+### Clone the Repository
 
 ```bash
 git pull https://github.com/PinJhih/gemini-dc-bot.git
 cd gemini-dc-bot
 ```
 
-### Install Dependency
+### Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Setup *.env* for Environment Variables
+### Set Environment Variables
 
 - Create a file named *.env*
     ```bash
@@ -32,7 +32,15 @@ pip install -r requirements.txt
 
 ## Run
 
+### Run on Host
+
+```bash
+python gemini_dc_bot/bot.py
 ```
-cd gemini-dc-bot
-python bot.py
+
+### Run on Docker
+
+```bash=
+docker build . gemini-dc-bot
+docker run gemini-dc-bot
 ```
