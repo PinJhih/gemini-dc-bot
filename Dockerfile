@@ -7,4 +7,4 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD ["python", "gemini-dc-bot/bot.py"]
+CMD ["python", "gemini_dc_bot/bot.py"]
